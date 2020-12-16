@@ -1,0 +1,27 @@
+{
+  "name": "auto",
+  "version": "1.0.0",
+  "description": "利用GitHub actions自动执行任务",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nashaofu/auto.git"
+  },
+  "keywords": [
+    "Auto",
+    "GitHub",
+    "Actions"
+  ],
+  "author": "nashaofu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nashaofu/auto/issues"
+  },
+  "homepage": "https://github.com/nashaofu/auto#readme",
+  "dependencies": {
+    "playwright": "^1.7.0"
+  }
+}
