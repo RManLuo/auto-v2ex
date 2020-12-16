@@ -1,10 +1,7 @@
 const { chromium } = require('playwright')
 
 ;(async () => {
-  const browser = await chromium.launch({
-    headless: false,
-    devtools: true
-  })
+  const browser = await chromium.launch()
   const context = await browser.newContext()
   context.addCookies([
     {
