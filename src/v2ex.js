@@ -12,7 +12,13 @@ const { chromium } = require('playwright')
       httpOnly: true
     }
   ])
-  console.log(process.env.A2)
+  console.log({
+    name: 'A2',
+    value: process.env.A2,
+    domain: '.v2ex.com',
+    path: '/',
+    httpOnly: true
+  })
   const page = await context.newPage()
   await page.goto('https://v2ex.com/')
   await browser.close()
