@@ -25,5 +25,5 @@ jobs:
       - name: Run task
         run: node src/v2ex.js
         env:
-          A2: ${{ secrets.A2 }}
+          V2EX_A2: ${{ secrets.V2EX_A2 }}
 
