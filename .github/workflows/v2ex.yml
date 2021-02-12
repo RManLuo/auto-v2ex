@@ -25,5 +25,6 @@ jobs:
 
       - name: Run task
         run: node src/v2ex.js
-        env:
-          V2EX_A2: ${{ secrets.V2EX_A2 }}
+        environment:
+          - name: MAIL
+          - name: V2EX

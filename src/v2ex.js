@@ -1,6 +1,7 @@
 const { chromium } = require('playwright')
+const sendMail = require('./sendMail')
 
-const url = 'https://v2ex.com'
+const url = 'https://www.v2ex.com/'
 
 async function main() {
   const browser = await chromium.launch()
@@ -18,14 +19,46 @@ async function main() {
   ])
 
   const page = await context.newPage()
-  await page.goto(url)
 
-  // 点击 领取今日的登录奖励 链接
-  // 必须经过这个页面过去，否则领取会异常
-  await page.click('a[href="/mission/daily"]')
+  try {
+    await page.goto(url)
+    // 点击 领取今日的登录奖励 链接
+    // 必须经过这个页面过去，否则领取会异常
+    await page.click('a[href="/mission/daily"]')
 
-  // 点击领取按钮
-  await page.click('#Main > div.box > div:nth-child(2) > input')
+    // 点击领取按钮
+    await page.click('#Main > div.box > div:nth-child(2) > input')
+  } catch (err) {
+    const buffer = await page.screenshot({
+      fullPage: true
+    })
+    sendMail({
+      subject: 'v2ex 领取登录奖励失败',
+      html: `
+<div>
+  <h1>v2ex 领取登录奖励失败</h1>
+  <div>
+    <p>错误信息如下：</p>
+    <p>
+      <pre><code>${err.stack || err.message}<code></pre>
+    </p>
+  </div>
+  <div>
+    <p>页面截图如下：</p>
+    <p><img src="cid:screenshot" alt="截图"/></p>
+  </div>
+</div>`,
+      attachments: [
+        {
+          cid: 'screenshot',
+          filename: 'screenshot.png',
+          content: buffer
+        }
+      ]
+    })
+
+    throw err
+  }
 
   // 关闭页面
   await browser.close()

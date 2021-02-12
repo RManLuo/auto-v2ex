@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/nashaofu/auto#readme",
   "dependencies": {
+    "nodemailer": "^6.4.18",
     "playwright": "^1.7.0"
   }
 }
