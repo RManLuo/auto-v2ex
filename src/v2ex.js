@@ -3,6 +3,14 @@ const sendMail = require('./sendMail')
 
 const url = 'https://www.v2ex.com/'
 
+const v2exA2 = process.env.V2EX_A2
+const mailUsername = process.env.MAIL_USERNAME
+const mailPassword = process.env.MAIL_PASSWORD
+const mailTo = process.env.MAIL_TO
+
+console.log(v2exA2)
+console.log(mailUsername, mailPassword, mailTo)
+
 async function main() {
   const browser = await chromium.launch()
 
@@ -11,7 +19,7 @@ async function main() {
   context.addCookies([
     {
       name: 'A2',
-      value: process.env.V2EX_A2,
+      value: v2exA2,
       domain: '.v2ex.com',
       path: '/',
       httpOnly: true
@@ -32,7 +40,7 @@ async function main() {
     const buffer = await page.screenshot({
       fullPage: true
     })
-    sendMail({
+    await sendMail({
       subject: 'v2ex 领取登录奖励失败',
       html: `
 <div>
