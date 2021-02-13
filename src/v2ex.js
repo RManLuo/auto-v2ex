@@ -1,4 +1,4 @@
-const { chromium } = require('playwright')
+const { chromium, devices } = require('playwright')
 const sendMail = require('./sendMail')
 
 const url = 'https://www.v2ex.com/'
@@ -8,13 +8,14 @@ const mailUsername = process.env.MAIL_USERNAME
 const mailPassword = process.env.MAIL_PASSWORD
 const mailTo = process.env.MAIL_TO
 
-console.log(v2exA2)
-console.log(mailUsername, mailPassword, mailTo)
+// 页面元素
+const $mission = 'a[href="/mission/daily"]'
+const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
 async function main() {
   const browser = await chromium.launch()
 
-  const context = await browser.newContext()
+  const context = await browser.newContext(devices['iPad Pro 11 landscape'])
 
   context.addCookies([
     {
@@ -29,13 +30,31 @@ async function main() {
   const page = await context.newPage()
 
   try {
-    await page.goto(url)
+    await page.goto(url, {
+      waitUntil: 'networkidle'
+    })
+
+    // 防止DDOS页面拦截请求
+    await page.waitForSelector($mission, {
+      // 等待60s
+      timeout: 60000
+    })
     // 点击 领取今日的登录奖励 链接
     // 必须经过这个页面过去，否则领取会异常
-    await page.click('a[href="/mission/daily"]')
+    await page.click($mission)
 
+    // 等待页面跳转导航
+    await page.waitForNavigation()
+    // 防止DDOS页面拦截请求
+    await page.waitForSelector($redeem, {
+      // 等待60s
+      timeout: 60000
+    })
     // 点击领取按钮
-    await page.click('#Main > div.box > div:nth-child(2) > input')
+    await page.click($redeem)
+    // 等待页面跳转导航
+    // 确保领取成功
+    await page.waitForNavigation()
   } catch (err) {
     const buffer = await page.screenshot({
       fullPage: true
