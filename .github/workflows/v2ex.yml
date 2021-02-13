@@ -11,9 +11,7 @@ on:
 jobs:
   v2ex:
     runs-on: ubuntu-latest
-    environment:
-      name: MAIL
-      url: V2EX
+    environment: V2EX
     steps:
       - name: Checkout
         uses: actions/checkout@v2
