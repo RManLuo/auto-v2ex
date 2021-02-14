@@ -15,7 +15,11 @@ const $redeem = '#Main > div.box > div:nth-child(2) > input'
 async function main() {
   const browser = await chromium.launch()
 
-  const context = await browser.newContext(devices['iPad Pro 11 landscape'])
+  const context = await browser.newContext({
+    userAgent:
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36',
+    deviceScaleFactor: 2
+  })
 
   context.addCookies([
     {
