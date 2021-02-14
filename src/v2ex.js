@@ -1,6 +1,5 @@
-const { chromium, devices } = require('playwright')
+const { webkit, devices } = require('playwright')
 const sendMail = require('./sendMail')
-const got = require('got')
 
 const url = 'https://www.v2ex.com/'
 
@@ -14,11 +13,9 @@ const $mission = 'a[href="/mission/daily"]'
 const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
 async function main() {
-  const browser = await chromium.launch()
+  const browser = await webkit.launch()
 
-  const context = await browser.newContext({
-    userAgent: `Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)`
-  })
+  const context = await browser.newContext(devices['iPad Pro 11 landscape'])
 
   context.addCookies([
     {
@@ -40,7 +37,7 @@ async function main() {
     // 防止DDOS页面拦截请求
     await page.waitForSelector($mission, {
       // 等待60s
-      timeout: 300000
+      timeout: 60000
     })
     // 点击 领取今日的登录奖励 链接
     // 必须经过这个页面过去，否则领取会异常
@@ -62,8 +59,6 @@ async function main() {
     const buffer = await page.screenshot({
       fullPage: true
     })
-    const { body } = await got('https://www.v2ex.com')
-    console.log(body)
     await sendMail({
       subject: 'v2ex 领取登录奖励失败',
       html: `
@@ -85,10 +80,6 @@ async function main() {
           cid: 'screenshot',
           filename: 'screenshot.png',
           content: buffer
-        },
-        {
-          filename: 'index.html',
-          content: body
         }
       ]
     })
