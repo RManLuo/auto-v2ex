@@ -41,7 +41,7 @@ async function main() {
     // 防止DDOS页面拦截请求
     await page.waitForSelector($mission, {
       // 等待60s
-      timeout: 60000
+      timeout: 300000
     })
     // 点击 领取今日的登录奖励 链接
     // 必须经过这个页面过去，否则领取会异常
