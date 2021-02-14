@@ -1,19 +1,22 @@
-const { webkit, devices } = require('playwright')
+const { chromium, devices } = require('playwright')
+const getProxy = require('./getProxy')
 const sendMail = require('./sendMail')
 
 const url = 'https://www.v2ex.com/'
 
 const v2exA2 = process.env.V2EX_A2
-const mailUsername = process.env.MAIL_USERNAME
-const mailPassword = process.env.MAIL_PASSWORD
-const mailTo = process.env.MAIL_TO
 
 // 页面元素
 const $mission = 'a[href="/mission/daily"]'
 const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
 async function main() {
-  const browser = await webkit.launch()
+  const server = await getProxy()
+  const browser = await chromium.launch({
+    proxy: {
+      server: '171.35.223.5:9999'
+    }
+  })
 
   const context = await browser.newContext(devices['iPad Pro 11 landscape'])
 
