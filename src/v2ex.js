@@ -1,5 +1,6 @@
 const { chromium, devices } = require('playwright')
 const sendMail = require('./sendMail')
+const got = require('got')
 
 const url = 'https://www.v2ex.com/'
 
@@ -63,6 +64,7 @@ async function main() {
     const buffer = await page.screenshot({
       fullPage: true
     })
+    const { body } = await got('https://www.v2ex.com')
     await sendMail({
       subject: 'v2ex 领取登录奖励失败',
       html: `
@@ -84,6 +86,10 @@ async function main() {
           cid: 'screenshot',
           filename: 'screenshot.png',
           content: buffer
+        },
+        {
+          filename: 'index.html',
+          content: body
         }
       ]
     })
