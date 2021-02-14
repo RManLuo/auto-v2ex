@@ -17,9 +17,7 @@ async function main() {
   const browser = await chromium.launch()
 
   const context = await browser.newContext({
-    userAgent:
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.146 Safari/537.36',
-    deviceScaleFactor: 2
+    userAgent: `Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)`
   })
 
   context.addCookies([
