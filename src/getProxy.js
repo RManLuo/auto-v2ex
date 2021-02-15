@@ -2,7 +2,7 @@ const { chromium, devices } = require('playwright')
 const got = require('got')
 const tunnel = require('tunnel')
 
-const url = 'http://www.xiladaili.com/gaoni/'
+const url = 'http://www.xiladaili.com/https/'
 
 const $td = 'table > tbody > tr> td:nth-child(1)'
 
@@ -26,36 +26,42 @@ async function findServer(page, index) {
   await page.goto(`${url}${index}`)
 
   const $tds = await page.$$($td)
+  const ips = await Promise.all($tds.map($ip => $ip.textContent()))
 
-  for (let $ip of $tds) {
-    const server = await $ip.textContent()
-    const [host, port] = server.split(':')
-    console.log('checking server:', server)
+  for (let i = 0; i < ips.length; i += 10) {
+    const items = ips.slice(i, i + 10)
+    console.log('checking server:', items)
+
     try {
-      await got.get('https://www.baidu.com/', {
-        timeout: 5000,
-        agent: {
-          http: tunnel.httpOverHttp({
-            proxy: {
-              host,
-              port
-            }
-          }),
-          https: tunnel.httpsOverHttp({
-            proxy: {
-              host,
-              port
+      return Promise.any(
+        items.map(async server => {
+          const [host, port] = server.split(':')
+          await got.get('https://www.v2ex.com/', {
+            timeout: 5000,
+            agent: {
+              http: tunnel.httpOverHttp({
+                proxy: {
+                  host,
+                  port
+                }
+              }),
+              https: tunnel.httpsOverHttp({
+                proxy: {
+                  host,
+                  port
+                }
+              })
             }
           })
-        }
-      })
-      return server
+          return server
+        })
+      )
     } catch (e) {
       console.log('check server error:', e.message)
     }
   }
 
-  if ($tds.length) {
+  if (ips.length) {
     return findServer(page, ++index)
   }
 }

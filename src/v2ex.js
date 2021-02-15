@@ -14,7 +14,7 @@ async function main() {
   const server = await getProxy()
   const browser = await chromium.launch({
     proxy: {
-      server: '171.35.223.5:9999'
+      server
     }
   })
 
@@ -63,7 +63,7 @@ async function main() {
       fullPage: true
     })
     await sendMail({
-      subject: 'v2ex 领取登录奖励失败',
+      subject: 'Github Action(v2ex 领取登录奖励失败)',
       html: `
 <div>
   <h1>v2ex 领取登录奖励失败</h1>
