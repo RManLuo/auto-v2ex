@@ -19,7 +19,7 @@ module.exports = async function ({ subject, html, attachments }) {
   })
 
   const message = {
-    from: `Github Auto<${mailUsername}>`,
+    from: `Github Auto仓库通知 <${mailUsername}>`,
     to: mailTo,
     subject,
     html,
