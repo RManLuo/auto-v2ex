@@ -35,7 +35,9 @@ async function main(): Promise<void> {
 
   await context.route('**/*', (route, request) => {
     const headers = request.headers()
+    const ua = headers['user-agent']
     headers['user-agent'] = headers['user-agent'].replace('HeadlessChrome', 'Chrome')
+    console.log(request.url(), ua, headers['user-agent'])
     route.continue({ headers })
   })
 
