@@ -31,6 +31,8 @@ async function main(): Promise<void> {
 
   const context = await browser.newContext()
 
+  await context.addInitScript({ path: path.join(__dirname, './preload.js') })
+
   context.addCookies([
     {
       name: 'A2',
@@ -42,8 +44,6 @@ async function main(): Promise<void> {
   ])
 
   const page = await context.newPage()
-
-  await page.addInitScript({ path: path.join(__dirname, './preload.js') })
 
   try {
     await page.goto(url)
@@ -73,8 +73,11 @@ async function main(): Promise<void> {
     const buffer = await page.screenshot({
       fullPage: true
     })
-    await page.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
-    const headless = await page.screenshot({
+    const page2 = await browser.newPage({
+      proxy: null
+    })
+    await page2.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
+    const headless = await page2.screenshot({
       fullPage: true
     })
     await sendMail({
