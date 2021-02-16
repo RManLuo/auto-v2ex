@@ -1,5 +1,4 @@
 import { chromium } from 'playwright'
-import getProxy from './getProxy'
 import path from 'path'
 import sendMail from './sendMail'
 
@@ -12,9 +11,6 @@ const $mission = 'a[href="/mission/daily"]'
 const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
 async function main(): Promise<void> {
-  const server = await getProxy()
-  console.log('server ip:', server)
-
   const browser = await chromium.launch({
     args: [
       '--no-sandbox',
@@ -26,9 +22,6 @@ async function main(): Promise<void> {
       '--disable-blink-features=AutomationControlled'
     ],
     ignoreDefaultArgs: ['--enable-automation', '--disable-extensions'],
-    proxy: {
-      server
-    }
   })
 
   const context = await browser.newContext()
@@ -78,33 +71,6 @@ async function main(): Promise<void> {
     const buffer = await page.screenshot({
       fullPage: true
     })
-    const browser2 = await chromium.launch({
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-infobars',
-        '--ignore-certifcate-errors',
-        '--ignore-certifcate-errors-spki-list',
-        '--disable-blink-features',
-        '--disable-blink-features=AutomationControlled'
-      ],
-      ignoreDefaultArgs: ['--enable-automation', '--disable-extensions']
-    })
-    const context2 = await browser2.newContext()
-    await context.route('**/*', (route, request) => {
-      const headers = request.headers()
-      const ua = headers['user-agent']
-      headers['user-agent'] = headers['user-agent'].replace('HeadlessChrome', 'Chrome')
-      console.log(request.url(), ua, headers['user-agent'])
-      route.continue({ headers })
-    })
-    await context2.addInitScript({ path: path.join(__dirname, './preload.js') })
-    const page2 = await context2.newPage()
-    await page2.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
-    const headless = await page2.screenshot({
-      fullPage: true
-    })
-    browser2.close()
     await sendMail({
       subject: 'Github Action(v2ex 领取登录奖励失败)',
       html: `
@@ -127,11 +93,6 @@ async function main(): Promise<void> {
           cid: 'screenshot',
           filename: 'screenshot.png',
           content: buffer
-        },
-        {
-          cid: 'headless',
-          filename: 'headless.png',
-          content: headless
         }
       ]
     })
