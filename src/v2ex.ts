@@ -33,6 +33,12 @@ async function main(): Promise<void> {
 
   const context = await browser.newContext()
 
+  await context.route('**/*', (route, request) => {
+    const headers = request.headers()
+    headers['user-agent'] = headers['user-agent'].replace('HeadlessChrome', 'Chrome')
+    route.continue({ headers })
+  })
+
   await context.addInitScript({ path: path.join(__dirname, './preload.js') })
 
   context.addCookies([
@@ -87,8 +93,14 @@ async function main(): Promise<void> {
       ],
       ignoreDefaultArgs: ['--enable-automation', '--disable-extensions']
     })
-    const page2 = await browser2.newPage()
-    await page2.addInitScript({ path: path.join(__dirname, './preload.js') })
+    const context2 = await browser2.newContext()
+    await context.route('**/*', (route, request) => {
+      const headers = request.headers()
+      headers['user-agent'] = headers['user-agent'].replace('HeadlessChrome', 'Chrome')
+      route.continue({ headers })
+    })
+    await context2.addInitScript({ path: path.join(__dirname, './preload.js') })
+    const page2 = await context2.newPage()
     await page2.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
     const headless = await page2.screenshot({
       fullPage: true
