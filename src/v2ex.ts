@@ -96,7 +96,9 @@ async function main(): Promise<void> {
     const context2 = await browser2.newContext()
     await context.route('**/*', (route, request) => {
       const headers = request.headers()
+      const ua = headers['user-agent']
       headers['user-agent'] = headers['user-agent'].replace('HeadlessChrome', 'Chrome')
+      console.log(request.url(), ua, headers['user-agent'])
       route.continue({ headers })
     })
     await context2.addInitScript({ path: path.join(__dirname, './preload.js') })

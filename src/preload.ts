@@ -21,11 +21,13 @@
     get: () => pluginArray
   })
 
+  Object.defineProperty(window, 'chrome', {
+    get: () => ({})
+  })
+
   const userAgent = navigator.userAgent
   Object.defineProperty(navigator, 'userAgent', {
-    get: () => {
-      userAgent.replace('HeadlessChrome', 'Chrome')
-    }
+    get: () => userAgent.replace('HeadlessChrome', 'Chrome')
   })
 
   Object.defineProperty(navigator, 'webdriver', {
