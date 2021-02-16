@@ -97,10 +97,10 @@ async function main(): Promise<void> {
     })
 
     throw err
+  } finally {
+    // 关闭页面
+    await browser.close()
   }
-
-  // 关闭页面
-  await browser.close()
 }
 
 main()
