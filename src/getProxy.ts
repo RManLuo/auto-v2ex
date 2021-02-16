@@ -1,12 +1,16 @@
-const { chromium, devices } = require('playwright')
-const got = require('got')
-const tunnel = require('tunnel')
+import { chromium, Page } from 'playwright'
+import http from 'http'
+import https from 'https'
+import axios from 'axios'
 
-const url = 'http://www.xiladaili.com/https/'
+const httpAgent = new http.Agent({ keepAlive: true })
+const httpsAgent = new https.Agent({ keepAlive: true })
+
+const url = 'http://www.xiladaili.com/http/'
 
 const $td = 'table > tbody > tr> td:nth-child(1)'
 
-module.exports = async function () {
+export default async function (): Promise<string> {
   const browser = await chromium.launch()
   const page = await browser.newPage()
   let server
@@ -22,7 +26,7 @@ module.exports = async function () {
 }
 
 // 分页查找IP
-async function findServer(page, index) {
+async function findServer (page: Page, index: number): Promise<string | null> {
   await page.goto(`${url}${index}`)
 
   const $tds = await page.$$($td)
@@ -33,27 +37,22 @@ async function findServer(page, index) {
     console.log('checking server:', items)
 
     try {
-      return Promise.any(
-        items.map(async server => {
-          const [host, port] = server.split(':')
-          await got.get('https://www.v2ex.com/', {
+      return await Promise.any(
+        items.map(async item => {
+          if (!item) {
+            throw new Error('没有有效IP')
+          }
+          const [host, port] = item.split(':')
+          await axios.get('https://www.v2ex.com/', {
+            httpAgent,
+            httpsAgent,
             timeout: 5000,
-            agent: {
-              http: tunnel.httpOverHttp({
-                proxy: {
-                  host,
-                  port
-                }
-              }),
-              https: tunnel.httpsOverHttp({
-                proxy: {
-                  host,
-                  port
-                }
-              })
+            proxy: {
+              host,
+              port: Number(port)
             }
           })
-          return server
+          return item
         })
       )
     } catch (e) {
@@ -63,5 +62,7 @@ async function findServer(page, index) {
 
   if (ips.length) {
     return findServer(page, ++index)
+  } else {
+    return null
   }
 }

@@ -1,16 +1,16 @@
-const { chromium, devices } = require('playwright')
-const getProxy = require('./getProxy')
-const sendMail = require('./sendMail')
+import { chromium } from 'playwright'
+import getProxy from './getProxy'
+import sendMail from './sendMail'
 
 const url = 'https://www.v2ex.com/'
 
-const v2exA2 = process.env.V2EX_A2
+const v2exA2 = process.env.V2EX_A2 || ''
 
 // 页面元素
 const $mission = 'a[href="/mission/daily"]'
 const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
-async function main() {
+async function main (): Promise<void> {
   const server = await getProxy()
   const browser = await chromium.launch({
     proxy: {
@@ -18,7 +18,7 @@ async function main() {
     }
   })
 
-  const context = await browser.newContext(devices['iPad Pro 11 landscape'])
+  const context = await browser.newContext()
 
   context.addCookies([
     {
@@ -33,9 +33,7 @@ async function main() {
   const page = await context.newPage()
 
   try {
-    await page.goto(url, {
-      waitUntil: 'networkidle'
-    })
+    await page.goto(url)
 
     // 防止DDOS页面拦截请求
     await page.waitForSelector($mission, {
