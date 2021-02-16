@@ -21,7 +21,7 @@ async function main(): Promise<void> {
       '--disable-blink-features',
       '--disable-blink-features=AutomationControlled'
     ],
-    ignoreDefaultArgs: ['--enable-automation', '--disable-extensions'],
+    ignoreDefaultArgs: ['--enable-automation', '--disable-extensions']
   })
 
   const context = await browser.newContext()
@@ -85,7 +85,6 @@ async function main(): Promise<void> {
   <div>
     <p>页面截图如下：</p>
     <p><img src="cid:screenshot" alt="截图"/></p>
-    <p><img src="cid:headless" alt="headless 测试截图"/></p>
   </div>
 </div>`,
       attachments: [
