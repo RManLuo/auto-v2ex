@@ -22,9 +22,12 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
-
+        
+      - name: Build Source
+        run: yarn build
+        
       - name: Run task
-        run: node src/v2ex.js
+        run: yarn v2ex
         env:
           V2EX_A2: ${{ secrets.V2EX_A2 }}
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
