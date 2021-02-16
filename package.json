@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .js,.ts --fix",
-    "v2ex": "node src/v2ex.js"
+    "v2ex": "node lib/v2ex.js"
   },
   "repository": {
     "type": "git",
