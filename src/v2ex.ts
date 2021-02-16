@@ -67,8 +67,6 @@ async function main(): Promise<void> {
     // 必须经过这个页面过去，否则领取会异常
     await page.click($mission)
 
-    // 等待页面跳转导航
-    await page.waitForNavigation()
     // 防止DDOS页面拦截请求
     await page.waitForSelector($redeem, {
       // 等待60s
@@ -76,9 +74,6 @@ async function main(): Promise<void> {
     })
     // 点击领取按钮
     await page.click($redeem)
-    // 等待页面跳转导航
-    // 确保领取成功
-    await page.waitForNavigation()
   } catch (err) {
     const buffer = await page.screenshot({
       fullPage: true
