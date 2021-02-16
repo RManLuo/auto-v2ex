@@ -10,9 +10,19 @@ const v2exA2 = process.env.V2EX_A2 || ''
 const $mission = 'a[href="/mission/daily"]'
 const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
-async function main (): Promise<void> {
+async function main(): Promise<void> {
   const server = await getProxy()
   const browser = await chromium.launch({
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-infobars',
+      '--ignore-certifcate-errors',
+      '--ignore-certifcate-errors-spki-list',
+      '--disable-blink-features',
+      '--disable-blink-features=AutomationControlled'
+    ],
+    ignoreDefaultArgs: ['--enable-automation', '--disable-extensions'],
     proxy: {
       server
     }
@@ -31,6 +41,8 @@ async function main (): Promise<void> {
   ])
 
   const page = await context.newPage()
+
+  await page.addInitScript({ path: './preload.js' })
 
   try {
     await page.goto(url)
@@ -60,6 +72,10 @@ async function main (): Promise<void> {
     const buffer = await page.screenshot({
       fullPage: true
     })
+    await page.goto('https://intoli.com/blog/not-possible-to-block-chrome-headless/chrome-headless-test.html')
+    const headless = await page.screenshot({
+      fullPage: true
+    })
     await sendMail({
       subject: 'Github Action(v2ex 领取登录奖励失败)',
       html: `
@@ -74,6 +90,7 @@ async function main (): Promise<void> {
   <div>
     <p>页面截图如下：</p>
     <p><img src="cid:screenshot" alt="截图"/></p>
+    <p><img src="cid:headless" alt="headless 测试截图"/></p>
   </div>
 </div>`,
       attachments: [
@@ -81,6 +98,11 @@ async function main (): Promise<void> {
           cid: 'screenshot',
           filename: 'screenshot.png',
           content: buffer
+        },
+        {
+          cid: 'headless',
+          filename: 'headless.png',
+          content: headless
         }
       ]
     })
