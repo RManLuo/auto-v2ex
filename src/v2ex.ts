@@ -1,5 +1,6 @@
 import { chromium } from 'playwright'
 import getProxy from './getProxy'
+import path from 'path'
 import sendMail from './sendMail'
 
 const url = 'https://www.v2ex.com/'
@@ -42,7 +43,7 @@ async function main(): Promise<void> {
 
   const page = await context.newPage()
 
-  await page.addInitScript({ path: './preload.js' })
+  await page.addInitScript({ path: path.join(__dirname, './preload.js') })
 
   try {
     await page.goto(url)
