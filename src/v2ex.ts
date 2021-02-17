@@ -10,7 +10,7 @@ const v2exA2 = process.env.V2EX_A2 || ''
 const $mission = 'a[href="/mission/daily"]'
 const $redeem = '#Main > div.box > div:nth-child(2) > input'
 
-async function main(): Promise<void> {
+async function main (): Promise<void> {
   const browser = await chromium.launch({
     args: [
       '--no-sandbox',
@@ -28,9 +28,8 @@ async function main(): Promise<void> {
 
   await context.route('**/*', (route, request) => {
     const headers = request.headers()
-    const ua = headers['user-agent']
+    // 修改UA
     headers['user-agent'] = headers['user-agent'].replace('HeadlessChrome', 'Chrome')
-    console.log(request.url(), ua, headers['user-agent'])
     route.continue({ headers })
   })
 
@@ -68,7 +67,7 @@ async function main(): Promise<void> {
     // 点击领取按钮
     await page.click($redeem)
   } catch (err) {
-    const buffer = await page.screenshot({
+    const screenshot = await page.screenshot({
       fullPage: true
     })
     await sendMail({
@@ -91,7 +90,7 @@ async function main(): Promise<void> {
         {
           cid: 'screenshot',
           filename: 'screenshot.png',
-          content: buffer
+          content: screenshot
         }
       ]
     })

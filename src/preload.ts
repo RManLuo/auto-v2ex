@@ -1,4 +1,4 @@
-;(function () {
+(function () {
   const pluginData = [
     { name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
     { name: 'Chrome PDF Viewer', filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai', description: '' },
@@ -7,7 +7,7 @@
 
   const pluginArray = pluginData.map(p => {
     class FakePlugin {
-      constructor() {
+      constructor () {
         return p
       }
     }

@@ -2,6 +2,10 @@
 
 利用 GitHub actions 自动执行任务
 
+## Status
+
+![v2ex](https://github.com/nashaofu/auto/workflows/v2ex/badge.svg)
+
 ## v2ex
 
 支持 v2ex 每日自动领取奖励。注意 v2ex 领取奖励必须在早上 8 点之后，否则不能领取成功。
