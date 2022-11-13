@@ -70,6 +70,7 @@ async function main (): Promise<void> {
     const screenshot = await page.screenshot({
       fullPage: true
     })
+    const message = err instanceof Error ? err.stack || err.message : String(err) 
     await sendMail({
       subject: 'Github Action(v2ex 领取登录奖励失败)',
       html: `
@@ -78,7 +79,7 @@ async function main (): Promise<void> {
   <div>
     <p>错误信息如下：</p>
     <p>
-      <pre><code>${err.stack || err.message}<code></pre>
+      <pre><code>${message}<code></pre>
     </p>
   </div>
   <div>
