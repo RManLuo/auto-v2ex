@@ -13,6 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Create auto_push file
+        run: echo "$(date +'%Y-%m-%d')" > .auto_push
+        
       - name: Set up Git
         run: |
           git config --global user.name 'RManLuo'
@@ -21,5 +24,5 @@ jobs:
       - name: Commit and Push
         run: |
           git add .
-          git commit -m "Auto commit $(date +'%Y-%m-%d %H:%M:%S')"
+          git commit -a -m "Auto commit $(date +'%Y-%m-%d %H:%M:%S')"
           git push
